@@ -4,29 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>HeliosPhotonic expliqué aux novices</title>
+  <title>HeliosPhotonic expliqué aux lecteurs</title>
 
-  <meta name="description" content="HeliosPhotonic expliqué simplement : centre, rosace, lumière, couleur, flux, retour et intelligence visuelle." />
+  <meta name="description" content="Comprendre simplement HeliosPhotonic : lumière, rosace, centre, flux, retour, corps lumineux et laboratoire astral interactif." />
 
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 
 <body>
 
+<canvas id="ambientCanvas"></canvas>
+
 <header class="site-header">
   <div class="container nav">
 
-    <a class="brand" href="index.html">
-      <span class="brand-logo"></span>
+    <a class="brand" href="index.html" aria-label="Accueil HeliosPhotonic">
+      <span class="brand-orb"></span>
       <span>HeliosPhotonic</span>
     </a>
 
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="Navigation principale">
       <a href="index.html">Accueil</a>
+      <a href="livre-tome2.html">Tome II</a>
+      <a href="laboratoire.html">Laboratoire</a>
       <a href="novices.html" class="active">Novices</a>
       <a href="scientifiques.html">Scientifiques</a>
-      <a href="laboratoire.html">Laboratoire</a>
-      <a href="livre-tome2.html">Tome II</a>
       <a href="faq.html">FAQ</a>
     </nav>
 
@@ -37,95 +39,108 @@
 
 <main>
 
-  <section class="section dark-section">
-    <div class="container split">
+  <section class="hero">
+    <div class="container split-grid">
 
       <div>
-        <span class="kicker">Lecture simple</span>
+        <span class="kicker">Comprendre simplement</span>
 
         <h1>
-          HeliosPhotonic<br />
-          <span>expliqué simplement</span>
+          Une lumière<br />
+          <span>qui organise le vivant</span>
         </h1>
 
         <p class="lead">
-          Imagine une roue de lumière. Au centre, une intention. Autour, des cercles,
-          des couleurs, des points et des flux. Le système montre comment une idée peut
-          partir du centre, se transformer, puis revenir plus claire.
+          HeliosPhotonic peut se comprendre comme une image vivante :
+          un centre émet une lumière, cette lumière traverse des formes,
+          puis elle revient vers le centre avec une information enrichie.
         </p>
 
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="laboratoire.html">Tester le laboratoire</a>
-          <a class="btn btn-secondary" href="livre-tome2.html">Voir le Tome II</a>
+        <p class="reader-text">
+          Les lecteurs n’ont pas besoin de connaître tous les termes techniques.
+          Il suffit d’entrer dans la logique : centre, rosace, couleur, circulation,
+          retour et compréhension.
+        </p>
+
+        <div class="actions">
+          <a class="btn primary" href="livre-tome2.html">Voir le livre</a>
+          <a class="btn gold" href="laboratoire.html">Tester le logiciel</a>
         </div>
       </div>
 
-      <div class="black-visual">
-        <div class="mini-rosace"></div>
+      <div class="visual-panel">
+        <canvas class="helios-canvas" data-mode="simple"></canvas>
+        <div class="visual-label">Centre · Lumière · Retour</div>
       </div>
 
     </div>
   </section>
 
-  <section class="section white-section">
+  <section class="section paper">
     <div class="container">
 
-      <div class="section-header">
-        <span class="kicker dark">Base de compréhension</span>
-        <h2>Les six mots clés</h2>
+      <div class="section-head">
+        <span class="kicker dark-kicker">Les bases</span>
+
+        <h2>Six clés pour entrer dans HeliosPhotonic</h2>
+
         <p>
-          Pour comprendre HeliosPhotonic, il n’est pas nécessaire de commencer par des
-          équations. Il faut d’abord comprendre la logique visuelle.
+          Ces mots permettent aux lecteurs de comprendre le livre et le laboratoire
+          sans se perdre dans un vocabulaire inutile.
         </p>
       </div>
 
       <div class="cards three">
 
         <article class="card">
-          <h3>1. Le centre</h3>
+          <div class="icon"></div>
+          <h3>Centre</h3>
           <p>
-            Le centre est le point de départ. Il représente le noyau d’une pensée,
-            d’une intention, d’une mémoire ou d’un mouvement intérieur.
+            Le centre est le point d’origine : il symbolise le noyau,
+            l’intention et la synthèse.
           </p>
         </article>
 
         <article class="card">
-          <h3>2. La rosace</h3>
+          <div class="icon"></div>
+          <h3>Rosace</h3>
           <p>
-            La rosace est une structure circulaire. Elle permet d’organiser les couleurs,
-            les directions, les anneaux et les flux autour d’un centre.
+            La rosace organise la lumière autour d’un centre.
+            Elle donne une forme à la circulation.
           </p>
         </article>
 
         <article class="card">
-          <h3>3. Le photon symbolique</h3>
+          <div class="icon"></div>
+          <h3>Photon</h3>
           <p>
-            Dans le logiciel, chaque photon est une petite unité lumineuse d’information.
-            Il n’est pas une preuve physique : c’est un signe visuel.
+            Le photon est utilisé comme unité symbolique de lumière-information.
           </p>
         </article>
 
         <article class="card">
-          <h3>4. La couleur</h3>
+          <div class="icon"></div>
+          <h3>Couleur</h3>
           <p>
-            La couleur donne une tonalité à l’information : clarté, intuition, énergie,
-            mémoire, transformation ou harmonie.
+            La couleur donne une tonalité à l’expérience :
+            énergie, mémoire, intuition, transformation.
           </p>
         </article>
 
         <article class="card">
-          <h3>5. Le retour</h3>
+          <div class="icon"></div>
+          <h3>Retour</h3>
           <p>
-            Le retour au centre est essentiel. Sans retour, le mouvement se disperse.
-            Avec retour, il devient compréhension.
+            Le retour au centre transforme le mouvement en compréhension.
           </p>
         </article>
 
         <article class="card">
-          <h3>6. La réflexion</h3>
+          <div class="icon"></div>
+          <h3>Lecture</h3>
           <p>
-            La réflexion intelligente utilise les données du thème astral comme support
-            symbolique pour produire une lecture intérieure structurée.
+            Le livre et le logiciel proposent une lecture symbolique,
+            visuelle et contemplative.
           </p>
         </article>
 
@@ -134,53 +149,27 @@
     </div>
   </section>
 
-  <section class="section dark-section">
-    <div class="container split">
+  <section class="section dark">
+    <div class="container split-grid">
+
+      <div class="cover-frame small-cover">
+        <img src="assets/couverture-tome2.png" alt="Couverture du livre Dieu est la lumière — Tome II" />
+      </div>
 
       <div>
-        <span class="kicker">Image mentale</span>
-        <h2>Le système fonctionne comme une respiration</h2>
+        <span class="kicker">Pour commencer</span>
 
-        <p>
-          Le flux sort du centre comme une expiration lumineuse. Il traverse les cercles,
-          rencontre les rosaces, change de couleur, puis revient au noyau comme une inspiration.
+        <h2>Le livre comme porte d’entrée</h2>
+
+        <p class="reader-text">
+          Le Tome II offre une première expérience complète :
+          il rassemble images, textes, corps lumineux, zodiaque, Fleur de Vie,
+          cœur solaire, cerveau de lumière et respiration universelle.
         </p>
 
-        <p>
-          Ce retour n’est pas un retour en arrière. C’est un retour enrichi. L’information
-          a circulé, elle a rencontré des formes, puis elle revient au centre avec une nouvelle
-          cohérence.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Phrase simple à retenir</h3>
-        <p>
-          HeliosPhotonic montre comment la lumière peut devenir une image de la pensée :
-          elle part, explore, relie, puis revient pour comprendre.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="section white-section">
-    <div class="container">
-
-      <div class="section-header">
-        <span class="kicker dark">Limites nécessaires</span>
-        <h2>Ce que le système ne prétend pas être</h2>
-        <p>
-          Il faut être clair. HeliosPhotonic n’est pas une médecine, ni une preuve scientifique
-          complète, ni une simulation quantique certifiée.
-        </p>
-      </div>
-
-      <div class="warning">
-        HeliosPhotonic est une œuvre artistique, spirituelle, philosophique et expérimentale.
-        Il propose une manière de voir, d’organiser, de méditer et de réfléchir. Il ne remplace
-        pas un médecin, un scientifique, un psychologue, un astronome professionnel ou un
-        protocole validé.
+        <div class="actions">
+          <a class="btn primary" href="livre-tome2.html">Découvrir le Tome II</a>
+        </div>
       </div>
 
     </div>
@@ -190,17 +179,21 @@
 
 <footer class="site-footer">
   <div class="container footer-grid">
+
     <div>
-      <strong>HeliosPhotonic</strong>
-      <p>Une lecture visuelle de la lumière, des rosaces et du retour au centre.</p>
+      <strong>HeliosPhotonic pour les lecteurs</strong>
+      <p>
+        Une introduction simple à la lumière, aux rosaces et au retour au centre.
+      </p>
     </div>
 
     <div>
       <a href="index.html">Accueil</a>
-      <a href="scientifiques.html">Scientifiques</a>
-      <a href="laboratoire.html">Laboratoire</a>
       <a href="livre-tome2.html">Tome II</a>
+      <a href="laboratoire.html">Laboratoire</a>
+      <a href="scientifiques.html">Scientifiques</a>
     </div>
+
   </div>
 </footer>
 
