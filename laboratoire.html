@@ -1,179 +1,399 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- HELIOS ASTRO — THEME ANIME INTEGRABLE -->
+<!-- Copie ce bloc dans ton site, à l’endroit où tu veux afficher le thème animé. -->
+<section id="helios-theme-widget">
+  <canvas id="helios-theme-canvas"></canvas>
+</section>
 
-  <title>Laboratoire HeliosPhotonic — Logiciel interactif</title>
+<style>
+#helios-theme-widget{
+  position:relative;
+  width:100%;
+  min-height:720px;
+  height:82vh;
+  overflow:hidden;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(25,90,180,.35),transparent 42%),
+    radial-gradient(circle at 50% 50%,rgba(255,90,200,.08),transparent 58%),
+    linear-gradient(135deg,#01030a,#06101d 48%,#010208);
+  box-shadow:0 30px 90px rgba(0,0,0,.45), inset 0 0 60px rgba(72,245,255,.04);
+}
+#helios-theme-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+@media(max-width:768px){
+  #helios-theme-widget{
+    min-height:520px;
+    height:68vh;
+    border-radius:18px;
+  }
+}
+</style>
 
-  <meta name="description" content="Laboratoire HeliosPhotonic : logiciel interactif de thème astral, flux lumineux, rosaces vivantes et expérience visuelle associée au Tome II Dieu est la lumière." />
+<script>
+(function(){
+'use strict';
 
-  <link rel="stylesheet" href="assets/style.css" />
-</head>
+function initHeliosTheme(){
+  const root=document.getElementById('helios-theme-widget');
+  const canvas=document.getElementById('helios-theme-canvas');
+  if(!root||!canvas)return;
 
-<body>
+  const ctx=canvas.getContext('2d',{alpha:false});
+  let dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
 
-<canvas id="ambientCanvas"></canvas>
+  const glyphs=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+  const planets=[
+    ['Soleil','☉',55,1,'#ffd75a'],
+    ['Lune','☽',92,13.2,'#48f5ff'],
+    ['Mercure','☿',128,4.1,'#37eaff'],
+    ['Vénus','♀',166,1.6,'#78ff9f'],
+    ['Mars','♂',202,.8,'#ff5548'],
+    ['Jupiter','♃',245,.20,'#ff9840'],
+    ['Saturne','♄',284,.09,'#ffd75a'],
+    ['Uranus','♅',315,.045,'#48f5ff'],
+    ['Neptune','♆',342,.025,'#9968ff'],
+    ['Pluton','♇',24,.016,'#ff55cb']
+  ];
 
-<header class="site-header">
-  <div class="container nav">
+  const S={
+    w:1,h:1,t:0,last:performance.now(),
+    stars:[],photons:[],learn:Array(360).fill(.06),
+    checksum:0,response:.2,sunDeg:55
+  };
 
-    <a class="brand" href="index.html" aria-label="Accueil HeliosPhotonic">
-      <span class="brand-orb"></span>
-      <span>HeliosPhotonic</span>
-    </a>
+  function resize(){
+    const box=root.getBoundingClientRect();
+    S.w=Math.max(320,box.width);
+    S.h=Math.max(320,box.height);
+    canvas.width=Math.floor(S.w*dpr);
+    canvas.height=Math.floor(S.h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    S.stars=Array.from({length:220},()=>({
+      x:Math.random()*S.w,
+      y:Math.random()*S.h,
+      r:Math.random()*1.2+.1,
+      a:Math.random()*.45+.04,
+      h:180+Math.random()*160
+    }));
+  }
 
-    <nav class="nav-links" aria-label="Navigation principale">
-      <a href="index.html">Accueil</a>
-      <a href="livre-tome2.html">Tome II</a>
-      <a href="laboratoire.html" class="active">Laboratoire</a>
-      <a href="novices.html">Novices</a>
-      <a href="scientifiques.html">Scientifiques</a>
-      <a href="faq.html">FAQ</a>
-    </nav>
+  function ang(d){return (d-90)*Math.PI/180}
+  function hue(d){return (d+360)%360}
+  function avg(){return S.learn.reduce((a,b)=>a+b,0)/360}
 
-    <a class="nav-cta" href="systeme-heliosphotonic.html?v=30" target="_blank" rel="noopener">
-      Plein écran
-    </a>
+  function spawn(n,base){
+    for(let i=0;i<n;i++){
+      let d=(Number.isFinite(base)?base+i*137.5:Math.random()*360)%360;
+      S.photons.push({
+        d,r:.04+Math.random()*.1,
+        life:0,ttl:3+Math.random()*8,
+        s:.3+Math.random()*1.4,
+        h:hue(d),
+        w:Math.random()*6.28
+      });
+    }
+    if(S.photons.length>540)S.photons.splice(0,S.photons.length-540);
+  }
 
-  </div>
-</header>
+  function bg(t){
+    ctx.fillStyle='#020713';
+    ctx.fillRect(0,0,S.w,S.h);
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    S.stars.forEach(st=>{
+      ctx.fillStyle=`hsla(${st.h},90%,70%,${st.a*(.5+.5*Math.sin(t+st.x))})`;
+      ctx.beginPath();
+      ctx.arc(st.x,st.y,st.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.restore();
+  }
 
-<main>
+  function ringText(cx,cy,R){
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    for(let i=0;i<12;i++){
+      let a=ang(i*30+15);
+      ctx.fillStyle=`hsla(${i*30+20},95%,70%,.95)`;
+      ctx.font=`${Math.max(24,R*.085)}px serif`;
+      ctx.fillText(glyphs[i],Math.cos(a)*R*1.03,Math.sin(a)*R*1.03);
+    }
+    ctx.restore();
+  }
 
-  <section class="hero lab-hero">
-    <div class="container split-grid">
+  function wheel(cx,cy,R,t){
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.globalCompositeOperation='screen';
 
-      <div class="hero-copy">
-        <span class="kicker">Laboratoire interactif</span>
+    for(let i=0;i<12;i++){
+      let a=ang(i*30);
+      ctx.strokeStyle='rgba(210,245,255,.55)';
+      ctx.lineWidth=1.2;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a)*R*.82,Math.sin(a)*R*.82);
+      ctx.lineTo(Math.cos(a)*R*1.12,Math.sin(a)*R*1.12);
+      ctx.stroke();
+    }
 
-        <h1>
-          Helios Astral Flux<br />
-          <span>le logiciel intégré</span>
-        </h1>
+    for(let r of [1.14,1.08,.99,.86,.72]){
+      ctx.strokeStyle='rgba(72,245,255,.18)';
+      ctx.lineWidth=r>1?2:.7;
+      ctx.beginPath();
+      ctx.arc(0,0,R*r,0,Math.PI*2);
+      ctx.stroke();
+    }
 
-        <p class="lead">
-          Le laboratoire permet aux visiteurs de générer une roue astrale visuelle
-          et de découvrir une lecture lumineuse fondée sur les signes, les flux,
-          les couleurs et les rosaces.
-        </p>
+    for(let d=0;d<360;d++){
+      let a=ang(d),maj=d%10===0,from=maj?R*.88:R*.91,to=maj?R*.98:R*.96;
+      ctx.strokeStyle=maj?`hsla(${hue(d)},95%,70%,.7)`:'rgba(220,255,255,.20)';
+      ctx.lineWidth=maj?1.1:.35;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a)*from,Math.sin(a)*from);
+      ctx.lineTo(Math.cos(a)*to,Math.sin(a)*to);
+      ctx.stroke();
+    }
 
-        <p class="reader-text">
-          Le logiciel fourni est intégré tel quel. Il peut être utilisé directement
-          dans la page ou ouvert en plein écran pour une expérience plus confortable.
-        </p>
+    ctx.restore();
+    ringText(cx,cy,R);
+  }
 
-        <div class="actions">
-          <a class="btn primary" href="systeme-heliosphotonic.html?v=30" target="_blank" rel="noopener">
-            Ouvrir en plein écran
-          </a>
+  function chromaVortex(cx,cy,R,t){
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    ctx.translate(cx,cy);
+    ctx.rotate(t*.035);
 
-          <a class="btn gold" href="livre-tome2.html">
-            Découvrir le Tome II
-          </a>
-        </div>
-      </div>
+    for(let d=0;d<360;d+=1.15){
+      let a=ang(d+Math.sin(t*.4+d*.03)*4);
+      let len=R*(.1+.66*(.7+.3*Math.sin(d*.09+t)));
+      ctx.strokeStyle=`hsla(${hue(d)},100%,58%,.22)`;
+      ctx.lineWidth=.65;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      for(let i=1;i<=36;i++){
+        let n=i/36;
+        let aa=a+n*n*1.9;
+        let rr=len*n;
+        ctx.lineTo(Math.cos(aa)*rr,Math.sin(aa)*rr);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
 
-      <div class="cover-frame small-cover">
-        <img src="assets/couverture-tome2.png" alt="Couverture du livre Dieu est la lumière — Tome II" />
-      </div>
+  function mandala(cx,cy,R,t){
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    ctx.translate(cx,cy);
 
-    </div>
-  </section>
+    for(let layer=0;layer<5;layer++){
+      ctx.rotate((layer%2?-1:1)*t*(.025+layer*.006));
+      let lobes=12+layer*6;
+      let rad=R*(.30+layer*.055);
 
-  <section class="section dark lab-main">
-    <div class="container">
+      for(let l=0;l<lobes;l++){
+        let sh=l/lobes*Math.PI*2;
+        ctx.save();
+        ctx.rotate(sh);
+        ctx.beginPath();
+        for(let i=0;i<=90;i++){
+          let n=i/90;
+          let a=n*Math.PI*2;
+          let rr=rad*(.22+.78*Math.sin(a*2)**2);
+          let x=Math.cos(a)*rr;
+          let y=Math.sin(a)*rr*.35;
+          if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+        }
+        ctx.strokeStyle=`hsla(${hue(l*360/lobes+layer*45+t*20)},100%,70%,${.08+layer*.025})`;
+        ctx.lineWidth=.65;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
 
-      <div class="section-head">
-        <span class="kicker">Interface réelle</span>
+    let g=ctx.createRadialGradient(0,0,0,0,0,R*.18);
+    g.addColorStop(0,'rgba(255,255,255,.95)');
+    g.addColorStop(.25,'rgba(255,215,90,.75)');
+    g.addColorStop(.7,'rgba(72,245,255,.18)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(0,0,R*.2,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
 
-        <h2>Logiciel HeliosPhotonic prêt à l’emploi</h2>
+  function arcToPlanet(cx,cy,R,p,t){
+    let deg=p[2],a=ang(deg),endR=R*1.02;
+    let ex=cx+Math.cos(a)*endR,ey=cy+Math.sin(a)*endR;
+    let startR=R*.12,sx=cx+Math.cos(a+t*.2)*startR,sy=cy+Math.sin(a+t*.2)*startR;
+    let bend=ang(deg+55*Math.sin(deg*.03+t*.5));
+    let c1x=cx+Math.cos(bend)*R*.55,c1y=cy+Math.sin(bend)*R*.55;
 
-        <p>
-          L’interface ci-dessous charge directement le fichier
-          <strong>systeme-heliosphotonic.html</strong>.
-          Les lecteurs peuvent renseigner leurs données et observer la roue générée.
-        </p>
-      </div>
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    for(let k=0;k<5;k++){
+      ctx.beginPath();
+      ctx.moveTo(sx,sy);
+      ctx.bezierCurveTo(
+        c1x+Math.sin(t*2+k)*R*.06,
+        c1y+Math.cos(t*2+k)*R*.06,
+        cx+Math.cos(a-.25)*R*.78,
+        cy+Math.sin(a-.25)*R*.78,
+        ex,ey
+      );
+      ctx.strokeStyle=k===0?`hsla(${hue(deg)},100%,65%,.72)`:`hsla(${hue(deg+k*18)},100%,75%,${.16-k*.02})`;
+      ctx.lineWidth=k===0?2.1:5+k*2;
+      ctx.stroke();
+    }
 
-      <div class="software-full">
-        <iframe src="systeme-heliosphotonic.html?v=30" title="Logiciel Helios Astral Flux complet"></iframe>
-      </div>
+    for(let i=0;i<7;i++){
+      let q=(i/7+t*.28)%1;
+      let x=(1-q)**3*sx+3*(1-q)**2*q*c1x+3*(1-q)*q*q*(cx+Math.cos(a-.25)*R*.78)+q**3*ex;
+      let y=(1-q)**3*sy+3*(1-q)**2*q*c1y+3*(1-q)*q*q*(cy+Math.sin(a-.25)*R*.78)+q**3*ey;
+      ctx.fillStyle=`hsla(${hue(deg+i*20)},100%,75%,.85)`;
+      ctx.beginPath();
+      ctx.arc(x,y,2.2,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
 
-    </div>
-  </section>
+  function planetsDraw(cx,cy,R,t){
+    planets.forEach(p=>arcToPlanet(cx,cy,R,p,t));
+    ctx.save();
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
 
-  <section class="section paper">
-    <div class="container">
+    planets.forEach(p=>{
+      let a=ang(p[2]);
+      let x=cx+Math.cos(a)*R*1.18;
+      let y=cy+Math.sin(a)*R*1.18;
 
-      <div class="section-head">
-        <span class="kicker dark-kicker">Ce que permet le logiciel</span>
+      ctx.globalCompositeOperation='lighter';
+      let g=ctx.createRadialGradient(x,y,0,x,y,R*.075);
+      g.addColorStop(0,'rgba(255,255,255,.95)');
+      g.addColorStop(.35,p[4]);
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;
+      ctx.beginPath();
+      ctx.arc(x,y,R*.075,0,Math.PI*2);
+      ctx.fill();
 
-        <h2>Une porte d’entrée visuelle vers le thème</h2>
+      ctx.fillStyle=p[4];
+      ctx.font=`${Math.max(26,R*.082)}px serif`;
+      ctx.fillText(p[1],x,y+1);
+    });
 
-        <p>
-          Le laboratoire n’est pas présenté comme une vérité scientifique absolue.
-          Il propose une expérience symbolique et graphique autour de la naissance,
-          de la roue zodiacale et de la lumière.
-        </p>
-      </div>
+    ctx.restore();
+  }
 
-      <div class="cards three">
+  function brain(cx,cy,R,t){
+    ctx.save();
+    ctx.globalCompositeOperation='screen';
+    ctx.strokeStyle='rgba(200,245,255,.20)';
+    ctx.lineWidth=1;
 
-        <article class="card">
-          <div class="icon"></div>
-          <h3>Données de naissance</h3>
-          <p>
-            Le visiteur renseigne son prénom, son nom, sa date,
-            son heure et son lieu de naissance.
-          </p>
-        </article>
+    ctx.beginPath();
+    ctx.moveTo(cx,cy-R*.42);
+    ctx.bezierCurveTo(cx-R*.38,cy-R*.56,cx-R*.58,cy-R*.22,cx-R*.52,cy+R*.14);
+    ctx.bezierCurveTo(cx-R*.48,cy+R*.42,cx-R*.17,cy+R*.50,cx,cy+R*.42);
+    ctx.moveTo(cx,cy-R*.42);
+    ctx.bezierCurveTo(cx+R*.38,cy-R*.56,cx+R*.58,cy-R*.22,cx+R*.52,cy+R*.14);
+    ctx.bezierCurveTo(cx+R*.48,cy+R*.42,cx+R*.17,cy+R*.50,cx,cy+R*.42);
+    ctx.stroke();
 
-        <article class="card">
-          <div class="icon"></div>
-          <h3>Roue astrale</h3>
-          <p>
-            Les informations sont transformées en lecture visuelle,
-            organisée autour d’une roue lumineuse.
-          </p>
-        </article>
+    for(let i=0;i<95;i++){
+      let a=i*2.399+t*.12;
+      let rr=R*(.05+.42*((i%37)/37));
+      let x=cx+Math.cos(a)*rr;
+      let y=cy+Math.sin(a)*rr*.75;
+      let v=S.learn[i%360];
+      ctx.fillStyle=`hsla(${180+v*140},100%,70%,${.12+v*.45})`;
+      ctx.beginPath();
+      ctx.arc(x,y,1+v*3,0,Math.PI*2);
+      ctx.fill();
 
-        <article class="card">
-          <div class="icon"></div>
-          <h3>Export et consultation</h3>
-          <p>
-            Le système peut servir de base à une expérience personnalisée,
-            à une consultation ou à une présentation visuelle.
-          </p>
-        </article>
+      if(i%3===0){
+        ctx.strokeStyle=`hsla(${180+v*140},100%,70%,${.04+v*.13})`;
+        ctx.beginPath();
+        ctx.moveTo(cx,cy);
+        ctx.lineTo(x,y);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
 
-      </div>
+  function photons(cx,cy,R,t){
+    ctx.save();
+    ctx.globalCompositeOperation='screen';
 
-    </div>
-  </section>
+    for(let i=S.photons.length-1;i>=0;i--){
+      let p=S.photons[i];
+      p.life+=.012*p.s;
+      if(p.life>p.ttl){S.photons.splice(i,1);continue;}
+      p.d=(p.d+.22*p.s)%360;
+      p.r=Math.min(1,p.r+.001*p.s);
 
-</main>
+      let a=ang(p.d+Math.sin(t*4+p.w)*8);
+      let rr=R*(.12+p.r*.9);
+      let x=cx+Math.cos(a)*rr;
+      let y=cy+Math.sin(a)*rr;
 
-<footer class="site-footer">
-  <div class="container footer-grid">
+      ctx.fillStyle=`hsla(${hue(p.h+t*20)},100%,75%,${.5*(1-p.life/p.ttl)})`;
+      ctx.beginPath();
+      ctx.arc(x,y,1.2+p.r*2.5,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
 
-    <div>
-      <strong>Laboratoire HeliosPhotonic</strong>
-      <p>
-        Interface interactive associée au Tome II Dieu est la lumière.
-      </p>
-    </div>
+  function frame(now){
+    let dt=Math.min(.05,(now-S.last)/1000);
+    S.last=now;
+    S.t+=dt;
+    let t=S.t;
 
-    <div>
-      <a href="index.html">Accueil</a>
-      <a href="livre-tome2.html">Tome II</a>
-      <a href="novices.html">Novices</a>
-      <a href="scientifiques.html">Scientifiques</a>
-    </div>
+    bg(t);
+    let cx=S.w/2;
+    let cy=S.h/2+8;
+    let R=Math.min(S.w,S.h)*.34;
+    R=Math.max(145,R);
 
-  </div>
-</footer>
+    chromaVortex(cx,cy,R,t);
+    wheel(cx,cy,R,t);
+    mandala(cx,cy,R,t);
+    planetsDraw(cx,cy,R,t);
+    brain(cx,cy,R,t);
+    photons(cx,cy,R,t);
 
-<script src="assets/site.js"></script>
-</body>
-</html>
+    if(Math.random()<.025)spawn(2);
+    requestAnimationFrame(frame);
+  }
+
+  function boot(){
+    resize();
+    spawn(180);
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize',resize);
+  boot();
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',initHeliosTheme,{once:true});
+}else{
+  initHeliosTheme();
+}
+})();
+</script>
